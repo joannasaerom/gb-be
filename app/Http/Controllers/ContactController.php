@@ -13,7 +13,6 @@ class ContactController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -24,7 +23,6 @@ class ContactController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
      */
     public function create()
     {
@@ -35,7 +33,7 @@ class ContactController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
@@ -44,7 +42,7 @@ class ContactController extends Controller
         // the duplicates are not the same contact and want to proceed with creating a new contact.
         if ($request->new_contact) {
             // Use request->only() since we don't want to send in the "new_contact" value.
-            $contact = Contact::create($request->only(
+            Contact::create($request->only(
                 'first_name',
                 'last_name',
                 'primary_email',
@@ -56,13 +54,12 @@ class ContactController extends Controller
                 'other_phone'
             ));
             return redirect()->route('contacts.dashboard')->with('success', 'Contact created!');
-        }
-        else {
+        } else {
             // Check for duplicates.
             $potential_contacts = ContactHelper::checkDuplication($request);
-
             // If duplicates are found alert the editor.
             if ($potential_contacts->count()) {
+
                 return redirect()->route('contacts.create')
                     ->with('alert', 'Alert: Potential duplicates.')
                     ->with('duplicates', $potential_contacts);
@@ -77,7 +74,7 @@ class ContactController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Contact  $contact
+     * @param \App\Models\Contact $contact
      */
     public function show(Contact $contact)
     {
@@ -88,7 +85,7 @@ class ContactController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Contact  $contact
+     * @param \App\Models\Contact $contact
      */
     public function edit(Contact $contact)
     {
@@ -97,10 +94,10 @@ class ContactController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified contact.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id)
@@ -117,36 +114,83 @@ class ContactController extends Controller
             'other_phone' => $request->other_phone,
         ];
 
-        $contacts = DB::table('contacts')
+        DB::table('contacts')
             ->where('id', '=', $id)
             ->update($data);
         return redirect()->route('contacts.dashboard')->with('success', 'Contact updated!');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified contact from the database.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
         // Delete specific contact.
-        $contacts = DB::table('contacts')
+        DB::table('contacts')
             ->where('id', '=', $id)
             ->delete();
         return redirect()->route('contacts.dashboard')->with('success', 'Contact deleted!');
     }
 
     /**
+     * Return a view of contacts to select for merging.
+     */
+    public function mergeList()
+    {
+        return view('contacts.merge', ['contacts' => Contact::all()]);
+    }
+
+    /**
+     *  Return a view with two contacts to compare for merging.
+     *
+     * @param \Illuminate\Http\Request $request
+     */
+    public function compare(Request $request)
+    {
+        if (!$request->has('merge_list')) {
+            return view('contacts.merge', ['contacts' => Contact::all()]);
+        } else {
+            $merge_list = $request->merge_list;
+            return view('contacts.compare', ['contact1' => Contact::find($merge_list[0]), 'contact2' => Contact::find($merge_list[1])]);
+        }
+    }
+
+    /**
      * Merge two contacts.
      *
-     * @param  int  $id
-     * @param int $merge_id
-     * @return \Illuminate\Http\Response
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function merge($id, $merge_id)
+    public function mergeUpdate(Request $request)
     {
+        $data = [
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'primary_email' => $request->primary_email,
+            'business_email' => $request->business_email,
+            'other_email' => $request->other_email,
+            'primary_phone' => $request->primary_phone,
+            'home_phone' => $request->home_phone,
+            'mobile_phone' => $request->mobile_phone,
+            'other_phone' => $request->other_phone,
+        ];
 
+        DB::table('contacts')
+            ->where('id', '=', $request->master_id)
+            ->update($data);
+
+        if ($request->master_id !== $request->contact1) {
+            DB::table('contacts')
+                ->where('id', '=', $request->contact1)
+                ->delete();
+        } else {
+            DB::table('contacts')
+                ->where('id', '=', $request->contact2)
+                ->delete();
+        }
+        return redirect()->route('contacts.dashboard')->with('success', 'Contact has been merged!');
     }
 }

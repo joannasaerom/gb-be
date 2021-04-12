@@ -7,7 +7,10 @@
 @if (session('alert'))
     {{ session('alert') }}
     @foreach (session('duplicates') as $duplicate)
-        <p>{{$duplicate->first_name}} {{$duplicate->last_name}} <a href="{{ route('contacts.edit', ['contact' => $duplicate->id]) }}">Edit</a></p>
+        <p>
+            {{$duplicate->first_name}} {{$duplicate->last_name}}
+            <a href="{{ route('contacts.edit', ['contact' => $duplicate->id]) }}">Edit</a>
+        </p>
     @endforeach
 @endif
 
