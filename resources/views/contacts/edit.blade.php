@@ -27,36 +27,32 @@
 
     <div>
         <label for="business_email">Business Email</label>
-        <input value="{{$contact->business_email ?? ''}}" type="email" name="business_email">
+        <input value="{{$contact->business_email}}" type="email" name="business_email">
     </div>
 
     <div>
         <label for="other_email">Other Email</label>
-        <input value="{{$contact->other_email ?? ''}}" type="email" name="other_email">
+        <input value="{{$contact->other_email}}" type="email" name="other_email">
     </div>
-
-{{--        @TODO: other emails multiple email fields--}}
 
     <div>
         <label for="primary_phone">Primary Phone</label>
         <input value="{{$contact->primary_phone}}" type="tel" name="primary_phone" required>
     </div>
 
-{{--        @TODO: other phones multiple phone fields--}}
-
     <div>
         <label for="home_phone">Home Phone</label>
-        <input value="{{$contact->home_phone ?? ''}}" type="tel" name="home_phone">
+        <input value="{{$contact->home_phone}}" type="tel" name="home_phone">
     </div>
 
     <div>
         <label for="mobile_phone">Mobile Phone</label>
-        <input value="{{$contact->mobile_phone ?? ''}}" type="tel" name="mobile_phone">
+        <input value="{{$contact->mobile_phone}}" type="tel" name="mobile_phone">
     </div>
 
     <div>
         <label for="other_phone">Other Phone</label>
-        <input value="{{$contact->other_phone ?? ''}}" type="tel" name="other_phone">
+        <input value="{{$contact->other_phone}}" type="tel" name="other_phone">
     </div>
 
     <button>

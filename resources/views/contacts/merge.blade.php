@@ -1,3 +1,5 @@
+<h1>Merge contacts</h1>
+<p>Select two contacts to merge.</p>
 <form action="{{ route('contacts.compare') }}" method="POST">
     @csrf
     @foreach ($contacts as $contact)
@@ -16,5 +18,4 @@
         <hr>
     @endforeach
     <button>Merge</button>
-
 </form>

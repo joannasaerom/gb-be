@@ -6,6 +6,7 @@
 @endif
 @if (session('alert'))
     {{ session('alert') }}
+    <p>Did you mean to edit one of the contacts listed below?</p>
     @foreach (session('duplicates') as $duplicate)
         <p>
             {{$duplicate->first_name}} {{$duplicate->last_name}}

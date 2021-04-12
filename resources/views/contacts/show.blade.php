@@ -1,6 +1,8 @@
-<h1>{{$contact->first_name}} {{$contact->last_name}}</h1>
-<a href="{{ route('contacts.edit', ['contact' => $contact->id]) }}">Edit</a>
-<a href="{{route('contacts.delete', ['contact' => $contact->id]) }}">Delete</a>
+<h1>Contact: {{$contact->first_name}} {{$contact->last_name}}</h1>
+<div>
+    <a href="{{ route('contacts.edit', ['contact' => $contact->id]) }}">Edit</a>
+    <a href="{{route('contacts.delete', ['contact' => $contact->id]) }}">Delete</a>
+</div>
 
 <div><strong>First Name:</strong> {{$contact->first_name}}</div>
 <div><strong>Last Name:</strong> {{$contact->last_name}}</div>
