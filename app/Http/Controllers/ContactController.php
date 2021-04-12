@@ -154,7 +154,10 @@ class ContactController extends Controller
             return view('contacts.merge', ['contacts' => Contact::all()]);
         } else {
             $merge_list = $request->merge_list;
-            return view('contacts.compare', ['contact1' => Contact::find($merge_list[0]), 'contact2' => Contact::find($merge_list[1])]);
+            return view('contacts.compare', [
+                'contact1' => Contact::find($merge_list[0]),
+                'contact2' => Contact::find($merge_list[1])
+            ]);
         }
     }
 
@@ -182,6 +185,8 @@ class ContactController extends Controller
             ->where('id', '=', $request->master_id)
             ->update($data);
 
+        // If the master id the editor selected is not contact1's id, then delete
+        // contact1 since that's the 'secondary' account.
         if ($request->master_id !== $request->contact1) {
             DB::table('contacts')
                 ->where('id', '=', $request->contact1)
