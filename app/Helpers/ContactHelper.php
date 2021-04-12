@@ -13,7 +13,7 @@ class ContactHelper
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Support\Collection
      */
-    public static function checkDuplication(Request $request)
+    public static function checkDuplication($request)
     {
         $emails = [$request->primary_email, $request->business_email, $request->other_email];
         $phones = [$request->primary_phone, $request->home_phone, $request->mobile_phone, $request->other_phone];
